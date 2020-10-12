@@ -1,3 +1,5 @@
 .vscode/*
-requirements.txt
-products/*
+.env
+Bookstore/__pycache__/
+products/__pycache__/
+products/migrations/
