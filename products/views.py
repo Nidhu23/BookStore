@@ -6,6 +6,7 @@ from .models import Product
 from rest_framework import status
 from .serializers import ProductSerializer
 import logging
+from django.db.models import Q
 
 logger = logging.getLogger("django")
 
@@ -54,7 +55,7 @@ def get_books(request):
 
 
 @api_view(["GET"])
-def get_book_by_name(request):
+def book_by_title_or_author(request):
     """
     API to search book by it's title
 
@@ -65,7 +66,9 @@ def get_book_by_name(request):
     Details of book that matches the title
     """
     try:
-        books = Product.objects.filter(title=request.data.get("title"))
+        books = Product.objects.filter(
+            Q(title=request.data.get("title")) | Q(author=request.data.get("author"))
+        )
         serializer = ProductSerializer(books, many=True)
         if serializer.is_valid:
             if serializer.data == []:
