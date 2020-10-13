@@ -8,4 +8,4 @@ class Product(models.Model):
     image = models.CharField(max_length=500)
     quantity = models.IntegerField()
     price = models.DecimalField(max_digits=20, decimal_places=3)
-    description = models.CharField(max_length=1000)
+    description = models.CharField(max_length=10000)
