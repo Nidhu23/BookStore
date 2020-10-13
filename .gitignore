@@ -3,3 +3,4 @@
 Bookstore/__pycache__/
 products/__pycache__/
 products/migrations/
+logs/
