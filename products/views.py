@@ -57,13 +57,13 @@ def get_books(request):
 @api_view(["GET"])
 def book_by_title_or_author(request):
     """
-    API to search book by it's title
+    API to search book by it's title or author name 
 
     Parameters:
-    argument(1):request paramter: having title of book
+    argument(1):request paramter: having title of book or author name
 
     Returns:
-    Details of book that matches the title
+    Details of book that matches the title or author name
     """
     try:
         books = Product.objects.filter(
