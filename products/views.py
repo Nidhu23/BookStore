@@ -57,7 +57,7 @@ def get_books(request):
 @api_view(["GET"])
 def book_by_title_or_author(request):
     """
-    API to search book by it's title or author name 
+    API to search book by it's title or author name
 
     Parameters:
     argument(1):request paramter: having title of book or author name
@@ -74,7 +74,7 @@ def book_by_title_or_author(request):
             if serializer.data == []:
                 return Response(
                     {
-                        "message": "Book with this title does not exist",
+                        "message": "Book with this title or author name does not exist",
                         "status_code": status.HTTP_404_NOT_FOUND,
                     },
                     status=status.HTTP_404_NOT_FOUND,
@@ -83,6 +83,47 @@ def book_by_title_or_author(request):
                 return Response(data=serializer.data, status=status.HTTP_200_OK)
         else:
             logger.error(serializer.errors)
+            return Response(
+                {
+                    "error_message": serializer.errors,
+                    "status_code": status.HTTP_500_INTERNAL_SERVER_ERROR,
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+    except Exception as e:
+        logger.error(e)
+        return Response(
+            {
+                "error_message": "Something went wrong",
+                "status_code": status.HTTP_500_INTERNAL_SERVER_ERROR,
+            },
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+
+@api_view(["GET"])
+def sort_by_price(request):
+    """
+    API to sort book by it's price
+
+    Returns:
+    Details of all books sorted by it's price
+    """
+    try:
+        books = Product.objects.order_by("price")
+        serializer = ProductSerializer(books, many=True)
+        if serializer.is_valid:
+            if serializer.data == []:
+                return Response(
+                    {
+                        "error_message": "No books available",
+                        "status_code": status.HTTP_404_NOT_FOUND,
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            else:
+                return Response(data=serializer.data, status=status.HTTP_200_OK)
+        else:
             return Response(
                 {
                     "error_message": serializer.errors,
