@@ -12,21 +12,26 @@ logger = logging.getLogger("django")
 
 # Create your views here.
 @api_view(["GET"])
-def get_books(request, sort="asc"):
+def get_books(request, sort="asc", id=0):
     """
     API to get all the books available
 
     Parameter:
     argument(1): value for sort(either ascending or descending)
+    argument(2): id to search book details corresponding to it
 
     Returns:
-    Details of all books available
+    Details of all books available sorted in ascending order by default or
+    details of book corresponding to the id passed.
     """
     try:
-        if sort == "desc":
-            books = Product.objects.order_by("-price")[:20]
+        if id == 0:
+            if sort == "desc":
+                books = Product.objects.order_by("-price")[:20]
+            else:
+                books = Product.objects.order_by("price")[:20]
         else:
-            books = Product.objects.order_by("price")[:20]
+            books = Product.objects.filter(id=id)
         serializer = ProductSerializer(books, many=True)
         if serializer.is_valid:
             if serializer.data == []:
