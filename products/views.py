@@ -6,6 +6,7 @@ from .models import Product
 from rest_framework import status
 from .serializers import ProductSerializer
 import logging
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 
 logger = logging.getLogger("django")
@@ -28,9 +29,17 @@ def get_books(request, sort="", id=0):
     try:
         if id == 0:
             if sort == "":
-                books = Product.objects.all()[:20]
+                books = Product.objects.all()
             else:
-                books = Product.objects.order_by(sort)[:20]
+                books = Product.objects.order_by(sort)
+            try:
+                paginator = Paginator(books, 10)
+                page = request.GET.get("page")
+                books = paginator.page(page)
+            except PageNotAnInteger:
+                books = paginator.page(1)
+            except EmptyPage:
+                books = paginator.page(paginator.num_pages)
         else:
             books = Product.objects.filter(id=id)
         serializer = ProductSerializer(books, many=True)
