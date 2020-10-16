@@ -29,6 +29,14 @@ def get_books(request, sort="", id=0):
     """
     try:
         books = get_book(request, id, sort)
+        try:
+            paginator = Paginator(books, 10)
+            page = request.GET.get("page")
+            books = paginator.page(page)
+        except PageNotAnInteger:
+            books = paginator.page(1)
+        except EmptyPage:
+            books = paginator.page(paginator.num_pages)
         serializer = ProductSerializer(books, many=True)
         if serializer.is_valid:
             if serializer.data == []:
