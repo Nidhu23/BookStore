@@ -8,7 +8,7 @@ def get_book(request, id, sort):
         if request.body != b"":
             books = Product.objects.filter(
                 Q(title__iexact=request.data.get("title"))
-                | Q(author__iexact=request.data.get("author"))
+                | Q(author__icontains=request.data.get("author"))
             )
             return books
         if sort == "":
