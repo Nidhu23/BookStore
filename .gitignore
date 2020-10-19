@@ -4,3 +4,5 @@ Bookstore/__pycache__/
 products/__pycache__/
 products/migrations/
 logs/
+users/__pycache__/
+users/migrations/
