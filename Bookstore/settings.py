@@ -157,3 +157,10 @@ LOGGING = {
         }
     },
 }
+
+AUTH_USER_MODEL = "users.User"
+TWILIO_AUTH_TOKEN = config("TWILIO_AUTH_TOKEN")
+TWILIO_SID = config("TWILIO_SID")
+TWILIO_NUMBER = config("TWILIO_NUMBER")
+REDIS_HOST = config("REDIS_HOST")
+REDIS_PORT = config("REDIS_PORT")
