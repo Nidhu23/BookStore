@@ -1,8 +1,9 @@
 from .models import Product
 from rest_framework import request
 from django.db.models import Q
+from .decorators import paginate
 
-
+@paginate
 def get_book(request, id, sort):
     if id == 0:
         if request.body != b"":

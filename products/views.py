@@ -32,14 +32,6 @@ def get_books(request, sort="", id=0):
     """
     try:
         books = get_book(request, id, sort)
-        try:
-            paginator = Paginator(books, 10)
-            page = request.GET.get("page")
-            books = paginator.page(page)
-        except PageNotAnInteger:
-            books = paginator.page(1)
-        except EmptyPage:
-            books = paginator.page(paginator.num_pages)
         serializer = ProductSerializer(books, many=True)
         if serializer.is_valid:
             if serializer.data == []:
@@ -50,14 +42,15 @@ def get_books(request, sort="", id=0):
             logger.error(serializer.errors)
             return Response(
                 {
-                    "Error_message": serializer.errors,
-                    "status_code": status.HTTP_500_INTERNAL_SERVER_ERROR,
-                }
+                    "error_message": serializer.errors,
+                    "Status_code": status.HTTP_500_INTERNAL_SERVER_ERROR,
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
     except Product.DoesNotExist:
         return Response(
             {
-                "Error_message": "The Book does not exist",
+                "error_message": "The Book does not exist",
                 "status_code": status.HTTP_404_NOT_FOUND,
             },
             status=status.HTTP_404_NOT_FOUND,
@@ -66,7 +59,7 @@ def get_books(request, sort="", id=0):
         logger.error(e)
         return Response(
             {
-                "Error_message": "There was an error while fetching the books",
+                "error_message": "There was an error while fetching the books",
                 "status_code": status.HTTP_500_INTERNAL_SERVER_ERROR,
             },
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
