@@ -1,7 +1,8 @@
 import math, random
 from twilio.rest import Client
 from Bookstore import settings
-
+from twilio.base.exceptions import TwilioRestException
+from Bookstore.BookstoreError import BookStoreError
 
 account_sid = settings.TWILIO_SID
 auth_token = settings.TWILIO_AUTH_TOKEN
@@ -17,11 +18,14 @@ def gen_otp():
 
 
 def send_otp(phone_num):
-    OTP = gen_otp()
+    try:
+        OTP = gen_otp()
 
-    message = client.messages.create(
-        body=f"your OTP is {OTP}",
-        from_=settings.TWILIO_NUMBER,
-        to=phone_num,
-    )
-    return OTP
+        message = client.messages.create(
+            body=f"your OTP is {OTP}",
+            from_=settings.TWILIO_NUMBER,
+            to=phone_num,
+        )
+        return OTP
+    except TwilioRestException:
+        raise BookStoreError("OTP could not be sent,Please check yor number")
