@@ -6,3 +6,4 @@ products/migrations/
 logs/
 users/__pycache__/
 users/migrations/
+users/tests/__pycache__/
