@@ -28,4 +28,4 @@ def send_otp(phone_num):
         )
         return OTP
     except TwilioRestException:
-        raise BookStoreError("OTP could not be sent,Please check yor number")
+        raise BookStoreError("OTP could not be sent,Please check yor number", 500)
