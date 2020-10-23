@@ -5,16 +5,16 @@ from products import serializers, models
 
 
 class ProductsAPITest(TestSetUp):
-    def test_get_books(self):
+    def test_get_all_books(self):
         response = self.client.get("/book/all/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_get_books_author(self):
-        self.data = {"author": "Chetan Bhagat'"}
+    def test_get_books_by_author(self):
+        self.data = {"author": "Chetan Bhagat"}
         response = self.client.get("/book/all/", self.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_get_books_title(self):
-        self.data = {"title": "The Girl in Room 105'"}
+    def test_get_books_by_title(self):
+        self.data = {"title": "The Girl in Room 105"}
         response = self.client.get("/book/all/", self.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
