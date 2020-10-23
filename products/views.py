@@ -1,14 +1,13 @@
-from django.shortcuts import render
 from rest_framework.decorators import api_view
-from rest_framework import request
+from rest_framework import request, status
 from rest_framework.response import Response
+from django.core.exceptions import FieldError
 from .models import Product
-from rest_framework import status
 from .serializers import ProductSerializer
 import logging
+from Bookstore import responses
 from .productRepository import get_book
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.db.models import Q
+
 
 logger = logging.getLogger("django")
 
@@ -35,7 +34,10 @@ def get_books(request, sort="", id=0):
         serializer = ProductSerializer(books, many=True)
         if serializer.is_valid:
             if serializer.data == []:
-                return Response("No books found", status=status.HTTP_404_NOT_FOUND)
+                return Response(
+                    responses.get_response("EmptyBookList"),
+                    status=responses.get_response("EmptyBookList").get("status"),
+                )
             else:
                 return Response(data=serializer.data, status=status.HTTP_200_OK)
         else:
@@ -49,18 +51,17 @@ def get_books(request, sort="", id=0):
             )
     except Product.DoesNotExist:
         return Response(
-            {
-                "error_message": "The Book does not exist",
-                "status_code": status.HTTP_404_NOT_FOUND,
-            },
-            status=status.HTTP_404_NOT_FOUND,
+            responses.get_response("EmptyBookList"),
+            status=responses.get_response("EmptyBookList").get("status"),
+        )
+    except FieldError:
+        return Response(
+            responses.get_response("FieldError"),
+            status=responses.get_response("FieldError").get("status"),
         )
     except Exception as e:
         logger.error(e)
         return Response(
-            {
-                "error_message": "There was an error while fetching the books",
-                "status_code": status.HTTP_500_INTERNAL_SERVER_ERROR,
-            },
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            responses.get_response("GetBookError"),
+            status=responses.get_response("GetBookError").get("status"),
         )
